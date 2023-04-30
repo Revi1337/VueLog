@@ -1,5 +1,6 @@
 package com.example.vuelog.service;
 
+import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,4 +18,9 @@ public class PostService {
         postRepository.save(postCreate.toEntity());
     }
 
+    public Post getPost(Long id) {
+        return postRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not exists posts"));
+    }
 }

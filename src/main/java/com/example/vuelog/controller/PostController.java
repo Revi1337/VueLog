@@ -1,5 +1,6 @@
 package com.example.vuelog.controller;
 
+import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.service.PostService;
 import jakarta.validation.Valid;
@@ -7,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -24,6 +23,13 @@ public class PostController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .build();
+    }
+
+    @GetMapping(path = "/posts/{postId}")
+    public ResponseEntity<Post> getPost(@PathVariable(name = "postId") Long id) {
+        Post post = postService.getPost(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(post);
     }
 
 }
