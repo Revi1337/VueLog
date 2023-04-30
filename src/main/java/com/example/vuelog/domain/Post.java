@@ -1,6 +1,7 @@
 package com.example.vuelog.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -19,14 +20,10 @@ public class Post {
 
     protected Post() {}
 
-    private Post(Long id, String title, String content) {
-        this.id = id;
+    @Builder
+    private Post(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public static Post of(String title, String content) {
-        return new Post(null, title, content);
     }
 
 }
