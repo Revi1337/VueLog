@@ -1,5 +1,6 @@
 package com.example.vuelog.controller;
 
+import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.repository.PostRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -102,6 +104,20 @@ class PostControllerTest {
                 .andDo(print());
         assertEquals(1L, postRepository.count());
         assertThat(postRepository.findAll()).extracting("title").containsExactly("Title");
+    }
+
+    @Test
+    @DisplayName(value = "글 한개 조회")
+    public void searchOnePost() throws Exception {
+        Post post = Post.builder().title("TITLE").content("CONTENT").build();
+        postRepository.save(post);
+
+        mockMvc.perform(get("/posts/{postId}", post.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id" ).value(post.getId()))
+                .andExpect(jsonPath("$.title" ).value("TITLE"))
+                .andExpect(jsonPath("$.content").value("CONTENT"))
+                .andDo(print());
     }
 
 }
