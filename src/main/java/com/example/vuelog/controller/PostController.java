@@ -1,7 +1,7 @@
 package com.example.vuelog.controller;
 
-import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +26,10 @@ public class PostController {
     }
 
     @GetMapping(path = "/posts/{postId}")
-    public ResponseEntity<Post> getPost(@PathVariable(name = "postId") Long id) {
-        Post post = postService.getPost(id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(post);
+    public ResponseEntity<PostResponse> getPost(@PathVariable(name = "postId") Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(postService.getPost(id));
     }
 
 }

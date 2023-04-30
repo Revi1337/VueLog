@@ -2,6 +2,7 @@ package com.example.vuelog.service;
 
 import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,10 @@ public class PostService {
         postRepository.save(postCreate.toEntity());
     }
 
-    public Post getPost(Long id) {
-        return postRepository
+    public PostResponse getPost(Long id) {
+        Post findPost = postRepository
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not exists posts"));
+        return PostResponse.from(findPost);
     }
 }
