@@ -1,6 +1,5 @@
 package com.example.vuelog.service;
 
-import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +14,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     public void write(PostCreate postCreate) {
-        Post post = postCreate.toEntity();
-        postRepository.save(post);
+        postRepository.save(postCreate.toEntity());
     }
 
 }
