@@ -109,13 +109,13 @@ class PostControllerTest {
     @Test
     @DisplayName(value = "글 한개 조회")
     public void searchOnePost() throws Exception {
-        Post post = Post.builder().title("TITLE").content("CONTENT").build();
+        Post post = Post.builder().title("123456789012345").content("CONTENT").build();
         postRepository.save(post);
 
         mockMvc.perform(get("/posts/{postId}", post.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id" ).value(post.getId()))
-                .andExpect(jsonPath("$.title" ).value("TITLE"))
+                .andExpect(jsonPath("$.title" ).value("1234567890"))
                 .andExpect(jsonPath("$.content").value("CONTENT"))
                 .andDo(print());
     }

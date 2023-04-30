@@ -2,6 +2,7 @@ package com.example.vuelog.service;
 
 import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,9 +51,9 @@ class PostServiceTest {
                 .build();
         postRepository.save(post);
 
-        Post findPost = postService.getPost(post.getId());
+        PostResponse postResponse = postService.getPost(post.getId());
 
-        assertNotNull(findPost);
+        assertNotNull(postResponse);
         assertEquals(1L, postRepository.count());
         assertEquals("foo", post.getTitle());
         assertEquals("bar", post.getContent());
