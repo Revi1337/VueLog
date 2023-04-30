@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.util.Assert;
 
 @Entity @Table(name = "POST") @Getter @ToString
 public class Post {
@@ -22,6 +23,8 @@ public class Post {
 
     @Builder
     private Post(String title, String content) {
+        Assert.notNull(title, "title cannot be null");
+        Assert.notNull(content, "content cannot be null");
         this.title = title;
         this.content = content;
     }
