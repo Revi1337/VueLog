@@ -1,6 +1,8 @@
 package com.example.vuelog.controller;
 
+import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.repository.PostRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,8 @@ class PostControllerTest {
 
     private final PostRepository postRepository;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     public PostControllerTest(MockMvc mockMvc, PostRepository postRepository) {
         this.mockMvc = mockMvc;
@@ -41,8 +45,8 @@ class PostControllerTest {
         mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"제목\", \"content\": \"내용\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("{}"))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(""))
                 .andDo(print());
     }
 
@@ -65,7 +69,7 @@ class PostControllerTest {
         mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"title11\", \"content\": \"content11\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print());
         assertEquals(1L, postRepository.count());
     }
@@ -76,10 +80,28 @@ class PostControllerTest {
         mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"title11\", \"content\": \"content11\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print());
         assertEquals(1L, postRepository.count());
         assertThat(postRepository.findAll()).extracting("title").containsExactly("title11");
+    }
+
+    @Test
+    @DisplayName(value = "json 포맷을 직접작성하지 않고, ObjectMapper 로 해결")
+    public void givenPostDataWhenRequestPostsThenStoredDataBase() throws Exception {
+        String postCreateJson = objectMapper.writeValueAsString(PostCreate.builder()
+                .title("Title")
+                .content("content")
+                .build());
+        System.out.println("postCreateJson = " + postCreateJson);
+
+        mockMvc.perform(post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postCreateJson))
+                .andExpect(status().isCreated())
+                .andDo(print());
+        assertEquals(1L, postRepository.count());
+        assertThat(postRepository.findAll()).extracting("title").containsExactly("Title");
     }
 
 }
