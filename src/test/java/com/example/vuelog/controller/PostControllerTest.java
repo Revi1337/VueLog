@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -124,21 +124,28 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName(value = "글 모두 조회")
+    @DisplayName(value = """
+        글 모두 조회 Controller 단에서 직접 값이 넘어오기때문에, page=0,1 모두 첫번쨰페이지를 반환한다.
+        yaml 과 @PageableDefault 중에 priority 는 PageableDefault 에 있다.
+    """)
     public void searchAllPost() throws Exception {
-        Post post1 = Post.builder().title("title1").content("content1").build();
-        Post post2 = Post.builder().title("title2").content("content2").build();
-        postRepository.saveAll(List.of(post1, post2));
+        IntStream.range(1, 31).forEach(num -> postRepository
+                .save(Post.builder()
+                        .title("title" + num)
+                        .content("content" + num)
+                        .build()
+                )
+        );
 
-        mockMvc.perform(get("/posts"))
+        mockMvc.perform(get("/posts")
+                        .param("page", "1")
+                        .param("size", "5")
+                        .param("sort", "id,desc"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)))
-                .andExpect(jsonPath("$.[0].id").value(post1.getId()))
-                .andExpect(jsonPath("$.[0].title").value("title1"))
-                .andExpect(jsonPath("$.[0].content").value("content1"))
-                .andExpect(jsonPath("$.[1].id").value(post2.getId()))
-                .andExpect(jsonPath("$.[1].title").value("title2"))
-                .andExpect(jsonPath("$.[1].content").value("content2"))
+                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$.[0].id").value("30"))
+                .andExpect(jsonPath("$.[0].title").value("title30"))
+                .andExpect(jsonPath("$.[0].content").value("content30"))
                 .andDo(print());
     }
 
