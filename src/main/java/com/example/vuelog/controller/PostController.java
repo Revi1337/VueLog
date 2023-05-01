@@ -1,20 +1,17 @@
 package com.example.vuelog.controller;
 
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static org.springframework.data.domain.Sort.Direction.*;
 
 
 @Slf4j
@@ -39,11 +36,10 @@ public class PostController {
     }
 
     @GetMapping(path = "/posts")
-    public ResponseEntity<List<PostResponse>> postAll(
-            @PageableDefault(size = 2) Pageable pageable) {
+    public ResponseEntity<List<PostResponse>> postAll(PostSearch postSearch) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(postService.getList(pageable));
+                .body(postService.getList(postSearch));
     }
 
 

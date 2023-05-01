@@ -2,11 +2,11 @@ package com.example.vuelog.service;
 
 import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +29,8 @@ public class PostService {
         return PostResponse.from(findPost);
     }
 
-    public List<PostResponse> getList(Pageable pageable) {
-        return postRepository.findAll(pageable)
+    public List<PostResponse> getList(PostSearch postSearch) {
+        return postRepository.getList(postSearch)
                 .stream()
                 .map(PostResponse::from)
                 .toList();
