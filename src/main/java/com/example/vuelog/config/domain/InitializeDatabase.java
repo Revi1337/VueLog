@@ -1,4 +1,4 @@
-package com.example.vuelog.config;
+package com.example.vuelog.config.domain;
 
 import com.example.vuelog.domain.Post;
 import jakarta.annotation.PostConstruct;
