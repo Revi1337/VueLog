@@ -6,6 +6,7 @@ import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +29,11 @@ public class PostService {
         return PostResponse.from(findPost);
     }
 
-    public List<PostResponse> getList() {
-            return postRepository.findAll()
-                    .stream()
-                    .map(PostResponse::from)
-                    .toList();
+    public List<PostResponse> getList(Pageable pageable) {
+        return postRepository.findAll(pageable)
+                .stream()
+                .map(PostResponse::from)
+                .toList();
     }
 
 }
