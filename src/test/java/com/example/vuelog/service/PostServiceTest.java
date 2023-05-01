@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -57,6 +60,20 @@ class PostServiceTest {
         assertEquals(1L, postRepository.count());
         assertEquals("foo", post.getTitle());
         assertEquals("bar", post.getContent());
+    }
+
+    @Test
+    @DisplayName(value = "글 모두 조회")
+    public void searchAllPost() {
+        Post post1 = Post.builder().title("TITLE1").content("CONTENT1").build();
+        Post post2 = Post.builder().title("TITLE2").content("CONTENT2").build();
+        Post post3 = Post.builder().title("TITLE3").content("CONTENT3").build();
+        postRepository.saveAll(List.of(post1, post2, post3));
+
+        List<PostResponse> postResponse = postService.getList();
+
+        assertThat(postRepository.count()).isEqualTo(3L);
+        assertThat(postResponse).extracting("title").containsExactly("TITLE1", "TITLE2", "TITLE3");
     }
 
 }
