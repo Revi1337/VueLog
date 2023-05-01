@@ -2,6 +2,7 @@ package com.example.vuelog.service;
 
 import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,8 +76,8 @@ class PostServiceTest {
         Post post3 = Post.builder().title("TITLE3").content("CONTENT3").build();
         postRepository.saveAll(List.of(post1, post2, post3));
 
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
-        List<PostResponse> postResponse = postService.getList(pageRequest);
+        PostSearch postSearch = PostSearch.builder().page(1).size(10).build();
+        List<PostResponse> postResponse = postService.getList(postSearch);
 
         assertThat(postRepository.count()).isEqualTo(3L);
         assertThat(postResponse).extracting("title").containsExactly("TITLE3", "TITLE2", "TITLE1");
@@ -85,7 +86,7 @@ class PostServiceTest {
     @Test
     @DisplayName(value = "첫번째 페이지 조회")
     public void searchFirstPage() {
-        IntStream.range(1, 31).forEach(num -> postRepository
+        IntStream.range(1, 21).forEach(num -> postRepository
                 .save(Post.builder()
                         .title("title" + num)
                         .content("content" + num)
@@ -93,12 +94,11 @@ class PostServiceTest {
                 )
         );
 
-        PageRequest pageRequest = PageRequest.of(0, 5, Sort.Direction.DESC, "id");
-        List<PostResponse> postResponse = postService.getList(pageRequest);
+        PostSearch postSearch = PostSearch.builder().page(1).size(10).build();
+        List<PostResponse> postResponse = postService.getList(postSearch);
 
-        assertEquals(5L, postResponse.size());
-        assertThat(postResponse).extracting("title")
-                .containsExactly("title30", "title29", "title28", "title27", "title26");
+        assertEquals(10L, postResponse.size());
+        assertThat(postResponse.get(0)).extracting("title").isEqualTo("title20");
     }
 
 }

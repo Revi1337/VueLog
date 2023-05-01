@@ -124,11 +124,8 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName(value = """
-        글 모두 조회 Controller 단에서 직접 값이 넘어오기때문에, page=0,1 모두 첫번쨰페이지를 반환한다.
-        yaml 과 @PageableDefault 중에 priority 는 PageableDefault 에 있다.
-    """)
-    public void searchAllPost() throws Exception {
+    @DisplayName(value = "페이지를 0으로 요청하면 첫 페이지를 가져온다.")
+    public void searchAllPost2() throws Exception {
         IntStream.range(1, 31).forEach(num -> postRepository
                 .save(Post.builder()
                         .title("title" + num)
@@ -138,11 +135,10 @@ class PostControllerTest {
         );
 
         mockMvc.perform(get("/posts")
-                        .param("page", "1")
-                        .param("size", "5")
-                        .param("sort", "id,desc"))
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$.length()", is(10)))
                 .andExpect(jsonPath("$.[0].id").value("30"))
                 .andExpect(jsonPath("$.[0].title").value("title30"))
                 .andExpect(jsonPath("$.[0].content").value("content30"))
