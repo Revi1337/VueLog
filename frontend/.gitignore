@@ -1,3 +1,10 @@
+.postcssrc.js
+.npmrc
+.editorconfig
+.vscode
+.eslintignore
+.eslintrc.js
+.prettierrc.json
 package-lock.json
 
 .DS_Store
