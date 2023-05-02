@@ -5,6 +5,7 @@ import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
+import com.example.vuelog.exception.PostNotFoundException;
 import com.example.vuelog.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -171,6 +172,35 @@ class PostServiceTest {
         postService.delete(post.getId());
 
         assertThat(postRepository.count()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName(value = "게시글 조회 - 존재하지 않는 게시글을조회하면 익셉션이 터져야한다.")
+    public void whenSearchNonExistPost() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+
+        assertThrows(PostNotFoundException.class, () -> postService.getPost(post.getId() + 1L));
+    }
+
+    @Test
+    @DisplayName(value = "게시글 수정 - 존재하지 않는 게시글을조회하면 익셉션이 터져야한다.")
+    public void whenUpdateNonExistPost() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+
+        assertThrows(PostNotFoundException.class,
+                () -> postService.edit(post.getId() + 1L, new PostEdit("asd", "Asd")));
+    }
+
+    @Test
+    @DisplayName(value = "게시글 삭제 - 존재하지 않는 게시글을조회하면 익셉션이 터져야한다.")
+    public void whenDeleteNonExistPost() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+
+        assertThrows(PostNotFoundException.class,
+                () -> postService.delete(post.getId() + 1L));
     }
 
 }
