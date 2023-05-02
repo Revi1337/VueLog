@@ -1,7 +1,9 @@
 package com.example.vuelog.service;
 
 import com.example.vuelog.domain.Post;
+import com.example.vuelog.domain.PostEditor;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.repository.PostRepository;
@@ -34,6 +36,14 @@ public class PostService {
                 .stream()
                 .map(PostResponse::from)
                 .toList();
+    }
+
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("post doesnt exists"));
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+        PostEditor postEditor = editorBuilder.title(postEdit.title()).content(postEdit.content()).build();
+        post.edit(postEditor);
     }
 
 }

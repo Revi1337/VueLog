@@ -1,6 +1,7 @@
 package com.example.vuelog.controller;
 
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.service.PostService;
@@ -40,6 +41,15 @@ public class PostController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(postService.getList(postSearch));
+    }
+
+    @PatchMapping(path = "/posts/{postId}")
+    public ResponseEntity<Void> updatePost(
+            @PathVariable(name = "postId") Long id, @RequestBody @Valid PostEdit postEdit) {
+        postService.edit(id, postEdit);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
     }
 
 
