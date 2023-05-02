@@ -162,4 +162,15 @@ class PostServiceTest {
         assertThat(changedPost).extracting("content").isEqualTo("수정컨텐츠");
     }
 
+    @Test
+    @DisplayName(value = "게시글 삭제")
+    public void deletePost() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+
+        postService.delete(post.getId());
+
+        assertThat(postRepository.count()).isEqualTo(0);
+    }
+
 }
