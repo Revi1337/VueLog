@@ -4,6 +4,7 @@ import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
+import com.example.vuelog.exception.InvalidRequestException;
 import com.example.vuelog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,9 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(path = "/posts")
-    public ResponseEntity<Void> post(@RequestBody @Valid PostCreate params) {
-        postService.write(params);
+    public ResponseEntity<Void> post(@RequestBody @Valid PostCreate postCreate) {
+        postCreate.validate();
+        postService.write(postCreate);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .build();
