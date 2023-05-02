@@ -6,6 +6,7 @@ import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
+import com.example.vuelog.exception.PostNotFoundException;
 import com.example.vuelog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class PostService {
     public PostResponse getPost(Long id) {
         Post findPost = postRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not exists posts"));
+                .orElseThrow(PostNotFoundException::new);
         return PostResponse.from(findPost);
     }
 
@@ -40,7 +41,7 @@ public class PostService {
 
     public void edit(Long id, PostEdit postEdit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("post doesnt exists"));
+                .orElseThrow(PostNotFoundException::new);
         PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
         PostEditor postEditor = editorBuilder.title(postEdit.title()).content(postEdit.content()).build();
         post.edit(postEditor);
@@ -49,7 +50,7 @@ public class PostService {
     public void delete(Long id) {
         postRepository.delete(
                 postRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("post doesnt exists"))
+                        .orElseThrow(PostNotFoundException::new)
         );
     }
 }
