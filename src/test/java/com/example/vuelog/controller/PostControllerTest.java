@@ -171,4 +171,41 @@ class PostControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName(value = "존재하지 않는 게시물을 요청했을때 익셉션")
+    public void whenRequestNonExistsPost() throws Exception {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+
+        mockMvc.perform(get("/posts/{postId}", post.getId() + 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName(value = "존재하지 않는 게시물을 수정하는 요청했을때 익셉션")
+    public void whenRequestUpdateNonExistsPost() throws Exception {
+        PostEdit postEdit = PostEdit.builder().title("수정타이틀").content("컨텐츠").build();
+
+        mockMvc.perform(patch("/posts/{postId}", + 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName(value = "게시물 작성 시 바보라는 글자를 포함될 수 없다")
+    public void cannotContainSomeStringInRequest() throws Exception {
+        String postCreateJson = objectMapper.writeValueAsString(PostCreate.builder()
+                .title("바보")
+                .content("content")
+                .build());
+
+        mockMvc.perform(post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postCreateJson))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
 }
