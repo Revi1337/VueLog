@@ -2,6 +2,7 @@ package com.example.vuelog.controller;
 
 import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.repository.PostRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +19,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -139,9 +139,23 @@ class PostControllerTest {
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(10)))
-                .andExpect(jsonPath("$.[0].id").value("30"))
+                .andExpect(jsonPath("$.[0].id").value("31"))
                 .andExpect(jsonPath("$.[0].title").value("title30"))
                 .andExpect(jsonPath("$.[0].content").value("content30"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName(value = "글 제목 수정")
+    public void updatePostTitle() throws Exception {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder().title("수정타이틀").content("컨텐츠").build();
+
+        mockMvc.perform(patch("/posts/{postId}", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 

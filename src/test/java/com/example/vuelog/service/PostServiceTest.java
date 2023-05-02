@@ -2,6 +2,7 @@ package com.example.vuelog.service;
 
 import com.example.vuelog.domain.Post;
 import com.example.vuelog.dto.request.PostCreate;
+import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
 import com.example.vuelog.repository.PostRepository;
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -99,6 +98,68 @@ class PostServiceTest {
 
         assertEquals(10L, postResponse.size());
         assertThat(postResponse.get(0)).extracting("title").isEqualTo("title20");
+    }
+
+    @Test
+    @DisplayName(value = "글 제목 수정")
+    public void updatePostTitle() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder().title("수정타이틀").build();
+
+        postService.edit(post.getId(), postEdit);
+
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("post doesnt exists id : " + post.getId()));
+        assertThat(changedPost).extracting("title").isEqualTo("수정타이틀");
+    }
+
+    @Test
+    @DisplayName(value = """
+             제목 수정시 컨텐츠 Null 테스트 PostEdit 에 content 를 추가안하면 기존의 content 가 날라감
+             따라서 클라이언트와 update 시 기존의 데이터도 보낼것인지, 수정할 데이터만 보낼것인지 상의해야 함.
+    """)
+    public void update() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder().title("수정타이틀").content("컨텐츠").build();
+
+        postService.edit(post.getId(), postEdit);
+
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("post doesnt exists id : " + post.getId()));
+        assertThat(changedPost).extracting("title").isEqualTo("수정타이틀");
+        assertThat(changedPost).extracting("content").isEqualTo("컨텐츠");
+    }
+
+    @Test
+    @DisplayName(value = "글 내용 수정")
+    public void updatePostContent() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder().title("타이틀").content("수정컨텐츠").build();
+
+        postService.edit(post.getId(), postEdit);
+
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("post doesnt exists id : " + post.getId()));
+        assertThat(changedPost).extracting("title").isEqualTo("타이틀");
+        assertThat(changedPost).extracting("content").isEqualTo("수정컨텐츠");
+    }
+
+    @Test
+    @DisplayName(value = "글 제목 혹은 내용 둘 중 하나만 수정")
+    public void updatePostTitleOrContent() {
+        Post post = Post.builder().title("타이틀").content("컨텐츠").build();
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder().content("수정컨텐츠").build();
+
+        postService.edit(post.getId(), postEdit);
+
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("post doesnt exists id : " + post.getId()));
+        assertThat(changedPost).extracting("title").isEqualTo("타이틀");
+        assertThat(changedPost).extracting("content").isEqualTo("수정컨텐츠");
     }
 
 }
