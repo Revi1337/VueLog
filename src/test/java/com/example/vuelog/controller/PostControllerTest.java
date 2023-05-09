@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -45,17 +46,6 @@ class PostControllerTest {
     public void beforeEach() { postRepository.deleteAll(); }
 
     @Test
-    @DisplayName(value = "/post 요청시 POST 를 출력한다.")
-    public void controllerTest() throws Exception {
-        mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목\", \"content\": \"내용\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(content().string(""))
-                .andDo(print());
-    }
-
-    @Test
     @DisplayName(value = "/post 요청시 title 값은 필수다.")
     public void validTest() throws Exception {
         mockMvc.perform(post("/posts")
@@ -72,9 +62,10 @@ class PostControllerTest {
     @DisplayName(value = "/posts 요청 시 DB 에 값이 저장된다 1.")
     public void whenRequestPostsThenStoredInDatabase1() throws Exception {
         mockMvc.perform(post("/posts")
+                        .header(HttpHeaders.AUTHORIZATION, "revi1337")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"title11\", \"content\": \"content11\"}"))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andDo(print());
         assertEquals(1L, postRepository.count());
     }
@@ -83,9 +74,10 @@ class PostControllerTest {
     @DisplayName(value = "/posts 요청 시 DB 에 값이 저장된다 2.")
     public void whenRequestPostsThenStoredInDatabase2() throws Exception {
         mockMvc.perform(post("/posts")
+                        .header(HttpHeaders.AUTHORIZATION, "revi1337")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"title11\", \"content\": \"content11\"}"))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andDo(print());
         assertEquals(1L, postRepository.count());
         assertThat(postRepository.findAll()).extracting("title").containsExactly("title11");
@@ -101,9 +93,10 @@ class PostControllerTest {
         System.out.println("postCreateJson = " + postCreateJson);
 
         mockMvc.perform(post("/posts")
+                        .header(HttpHeaders.AUTHORIZATION, "revi1337")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(postCreateJson))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andDo(print());
         assertEquals(1L, postRepository.count());
         assertThat(postRepository.findAll()).extracting("title").containsExactly("Title");

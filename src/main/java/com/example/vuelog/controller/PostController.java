@@ -4,7 +4,6 @@ import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
 import com.example.vuelog.dto.response.PostResponse;
-import com.example.vuelog.exception.InvalidRequestException;
 import com.example.vuelog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +22,12 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(path = "/posts")
-    public ResponseEntity<Void> post(@RequestBody @Valid PostCreate postCreate) {
-        postCreate.validate();
-        postService.write(postCreate);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .build();
+    public void post(@RequestBody @Valid PostCreate postCreate,
+                     @RequestHeader String authorization) {
+        if (authorization.equals("revi1337")) {
+            postCreate.validate();
+            postService.write(postCreate);
+        }
     }
 
     @GetMapping(path = "/posts/{postId}")
@@ -46,21 +45,20 @@ public class PostController {
     }
 
     @PatchMapping(path = "/posts/{postId}")
-    public ResponseEntity<Void> updatePost(
-            @PathVariable(name = "postId") Long id, @RequestBody @Valid PostEdit postEdit) {
-        postService.edit(id, postEdit);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
+    public void updatePost(@PathVariable(name = "postId") Long id,
+                                           @RequestBody @Valid PostEdit postEdit,
+                                           @RequestHeader String authorization) {
+        if (authorization.equals("revi1337")) {
+            postService.edit(id, postEdit);
+        }
     }
 
     @DeleteMapping(path = "/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable(name = "postId") Long id) {
-        postService.delete(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
+    public void deletePost(@PathVariable(name = "postId") Long id,
+                                           @RequestHeader String authorization) {
+        if (authorization.equals("revi1337")) {
+            postService.delete(id);
+        }
     }
-
 
 }
