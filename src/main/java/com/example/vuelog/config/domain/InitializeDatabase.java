@@ -8,10 +8,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 
-@Profile("local")
-@Component
+@Component @Profile("local")
 public class InitializeDatabase {
 
     private final InitMemberService initMemberService;
@@ -48,7 +46,11 @@ public class InitializeDatabase {
                                 .build()
                 );
             entityManager.persist(
-                    User.of(null, "revi1337", "revi1337@naver.com", "1234", LocalDateTime.now())
+                    User.create()
+                            .name("revi1337")
+                            .email("revi1337@naver.com")
+                            .password("1234")
+                            .build()
             );
         }
     }

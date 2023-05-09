@@ -1,9 +1,8 @@
 package com.example.vuelog.controller;
 
-import com.example.vuelog.domain.User;
 import com.example.vuelog.dto.request.LoginRequest;
-import com.example.vuelog.exception.WrongSignInformation;
-import com.example.vuelog.repository.UserRepository;
+import com.example.vuelog.dto.response.SessionResponse;
+import com.example.vuelog.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
     @PostMapping(path = "/auth/login")
-    public User login(@RequestBody @Valid LoginRequest loginRequest) {
-        log.info(">> {}", loginRequest);
-        User user = userRepository.findByEmailAndPassword(loginRequest.email(), loginRequest.password())
-                .orElseThrow(WrongSignInformation::new);
-        return user;
+    public SessionResponse login(@RequestBody @Valid LoginRequest loginRequest) {
+        return authService.signIn(loginRequest);
     }
 }
