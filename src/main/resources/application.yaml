@@ -3,7 +3,8 @@ spring:
     active: local
 
   datasource:
-    url: jdbc:h2:~/vuelog
+#    url: jdbc:h2:~/vuelog
+    url: jdbc:h2:tcp://localhost/~/vuelog
     username: sa
     password:
     driver-class-name: org.h2.Driver

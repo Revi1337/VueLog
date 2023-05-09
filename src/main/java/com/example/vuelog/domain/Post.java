@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 @Entity @Table(name = "POST") @Getter @ToString
 public class Post {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_ID")
     private Long id;
 

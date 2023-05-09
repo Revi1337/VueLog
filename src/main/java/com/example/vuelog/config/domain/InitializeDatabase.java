@@ -1,11 +1,14 @@
 package com.example.vuelog.config.domain;
 
 import com.example.vuelog.domain.Post;
+import com.example.vuelog.domain.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Profile("local")
 @Component
@@ -44,6 +47,9 @@ public class InitializeDatabase {
                                 .content("content" + i)
                                 .build()
                 );
+            entityManager.persist(
+                    User.of(null, "revi1337", "revi1337@naver.com", "1234", LocalDateTime.now())
+            );
         }
     }
 
