@@ -21,13 +21,20 @@ public class PostController {
 
     private final PostService postService;
 
+    @GetMapping(path = "/test")
+    public String test() {
+        return "test";
+    }
+
+    @GetMapping(path = "/foo")
+    public String foo() {
+        return "foo";
+    }
+
     @PostMapping(path = "/posts")
-    public void post(@RequestBody @Valid PostCreate postCreate,
-                     @RequestHeader String authorization) {
-        if (authorization.equals("revi1337")) {
-            postCreate.validate();
-            postService.write(postCreate);
-        }
+    public void post(@RequestBody @Valid PostCreate postCreate) {
+        postCreate.validate();
+        postService.write(postCreate);
     }
 
     @GetMapping(path = "/posts/{postId}")
@@ -45,20 +52,13 @@ public class PostController {
     }
 
     @PatchMapping(path = "/posts/{postId}")
-    public void updatePost(@PathVariable(name = "postId") Long id,
-                                           @RequestBody @Valid PostEdit postEdit,
-                                           @RequestHeader String authorization) {
-        if (authorization.equals("revi1337")) {
-            postService.edit(id, postEdit);
-        }
+    public void updatePost(@PathVariable(name = "postId") Long id, @RequestBody @Valid PostEdit postEdit) {
+        postService.edit(id, postEdit);
     }
 
     @DeleteMapping(path = "/posts/{postId}")
-    public void deletePost(@PathVariable(name = "postId") Long id,
-                                           @RequestHeader String authorization) {
-        if (authorization.equals("revi1337")) {
-            postService.delete(id);
-        }
+    public void deletePost(@PathVariable(name = "postId") Long id) {
+        postService.delete(id);
     }
 
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Map;
 
-@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+//@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public record ExceptionResponse(
         int code,
         String message,
