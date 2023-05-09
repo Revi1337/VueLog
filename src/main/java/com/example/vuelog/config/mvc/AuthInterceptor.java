@@ -17,23 +17,28 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class AuthInterceptor implements HandlerInterceptor {
 
-    @Override // Controller 가 동작 직전 ( Object handler 는 현재 실행하려는 메소드 자체를 의미함 --> 여기가 Controller 로 넘어갈지 말지에 대한 포인트임 --> false 를 주면 Controller 로 넘어가지 않음.)
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // Controller 가 동작 직전 ( Object handler 는 현재 실행하려는 메소드 자체를 의미함 --> 여기가 Controller 로 넘어갈지 말지에 대한 포인트임 --> false 를 주면 Controller 로 넘어가지 않음.)
         log.info("AuthInterceptor.preHandle");
         String accessToken = request.getParameter("accessToken");
-        if (accessToken != null && accessToken.equals("revi1337"))
+        if (accessToken != null && !accessToken.isBlank()) {
+            request.setAttribute("userName", accessToken);
             return true;
+        }
         throw new UnAuthorizationException();
     }
 
-    @Override // Controller 를 거치고 난 후
+    @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        // Controller 를 거치고 난 후
         log.info("AuthInterceptor.postHandle");
         HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
-    @Override // DispatcherServlet 의 화면 처리(뷰)가 완료된 상태에서 처리
+    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        // DispatcherServlet 의 화면 처리(뷰)가 완료된 상태에서 처리
         log.info("AuthInterceptor.afterCompletion");
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }

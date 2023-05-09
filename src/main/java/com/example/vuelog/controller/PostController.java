@@ -1,5 +1,6 @@
 package com.example.vuelog.controller;
 
+import com.example.vuelog.config.mvc.UserSession;
 import com.example.vuelog.dto.request.PostCreate;
 import com.example.vuelog.dto.request.PostEdit;
 import com.example.vuelog.dto.request.PostSearch;
@@ -21,14 +22,15 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping(path = "/test")
-    public String test() {
-        return "test";
+    @GetMapping(path = "/foo")
+    public String foo(UserSession userSession) {
+        log.info(">> {}", userSession.name);
+        return "foo";
     }
 
-    @GetMapping(path = "/foo")
-    public String foo() {
-        return "foo";
+    @GetMapping(path = "/bar")
+    public String bar(UserSession userSession) {
+        return "인증 필요 X";
     }
 
     @PostMapping(path = "/posts")
