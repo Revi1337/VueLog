@@ -1,5 +1,9 @@
 package com.example.vuelog.config.mvc;
 
 public class UserSession {
-    public String name;
+    public final Long id;
+
+    public UserSession(Long id) {
+        this.id = id;
+    }
 }

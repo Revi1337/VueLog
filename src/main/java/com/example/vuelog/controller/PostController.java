@@ -24,12 +24,12 @@ public class PostController {
 
     @GetMapping(path = "/foo")
     public String foo(UserSession userSession) {
-        log.info(">> {}", userSession.name);
+        log.info(">> {}", userSession.id);
         return "foo";
     }
 
     @GetMapping(path = "/bar")
-    public String bar(UserSession userSession) {
+    public String bar() {
         return "인증 필요 X";
     }
 
