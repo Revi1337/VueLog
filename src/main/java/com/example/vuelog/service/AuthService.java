@@ -1,6 +1,5 @@
 package com.example.vuelog.service;
 
-import com.example.vuelog.domain.Session;
 import com.example.vuelog.domain.User;
 import com.example.vuelog.dto.request.LoginRequest;
 import com.example.vuelog.dto.response.SessionResponse;
