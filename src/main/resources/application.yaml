@@ -31,3 +31,7 @@ spring:
 logging:
   level:
     sql: debug
+
+revi1337:
+  jwt-key: "JyctHB7tMimFbk+KD2yswRiyxGfO9XDrBi6bxaaD8vY="
+

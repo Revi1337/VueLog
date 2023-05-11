@@ -1,5 +1,6 @@
 package com.example.vuelog.config.mvc;
 
+import com.example.vuelog.config.AppConfig;
 import com.example.vuelog.domain.Session;
 import com.example.vuelog.exception.UnAuthorizationException;
 import com.example.vuelog.repository.SessionRepository;
@@ -26,9 +27,9 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
     private final SessionRepository sessionRepository;
 
-    private static final String BEARER_PREFIX = "Bearer ";
+    private final AppConfig appConfig;
 
-    private static final String KEY = "JyctHB7tMimFbk+KD2yswRiyxGfO9XDrBi6bxaaD8vY=";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -40,11 +41,12 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
+        log.info(">>> {}", appConfig.toString());
         String authHeaderValue = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeaderValue == null || !authHeaderValue.startsWith(BEARER_PREFIX))
             throw new UnAuthorizationException();
         String jwtToken = authHeaderValue.substring(BEARER_PREFIX.length());
-        byte[] decodedKey = Base64.getDecoder().decode(KEY);
+        byte[] decodedKey = Base64.getDecoder().decode(appConfig.jwtKey);
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(decodedKey)

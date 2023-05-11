@@ -1,5 +1,6 @@
 package com.example.vuelog.controller;
 
+import com.example.vuelog.config.AppConfig;
 import com.example.vuelog.dto.request.LoginRequest;
 import com.example.vuelog.dto.response.SessionResponse;
 import com.example.vuelog.service.AuthService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
+import java.util.Date;
 
 @Slf4j
 @RestController @RequiredArgsConstructor
@@ -21,14 +23,18 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private static final String KEY = "JyctHB7tMimFbk+KD2yswRiyxGfO9XDrBi6bxaaD8vY=";
+    private final AppConfig appConfig;
 
     @PostMapping(path = "/auth/login")
     public SessionResponse login(@RequestBody @Valid LoginRequest loginRequest) {
         Long userId = authService.signIn(loginRequest);
 
-        SecretKey secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(KEY));
-        String jws = Jwts.builder().setSubject(String.valueOf(userId)).signWith(secretKey).compact();
+        SecretKey secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(appConfig.jwtKey));
+        String jws = Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .signWith(secretKey)
+                .setIssuedAt(new Date())
+                .compact();
         return SessionResponse.of(jws);
 //
     }
