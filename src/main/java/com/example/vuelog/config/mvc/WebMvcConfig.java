@@ -14,14 +14,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final SessionRepository sessionRepository;
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new AuthInterceptor())
-//                .excludePathPatterns("/error");                                  // 해당 Path 에만 설정한 Interceptor 가 동작한다. (excludePathPatterns 도 있음.)
-//    }
-
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new AuthResolver(sessionRepository));
     }
 }
+
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new AuthInterceptor())
+//                .excludePathPatterns("/error");                                  // 해당 Path 에만 설정한 Interceptor 가 동작한다. (excludePathPatterns 도 있음.)
+//    }
